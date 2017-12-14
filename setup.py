@@ -7,7 +7,7 @@ from setuptools import setup
 
 setup(
     name='pandas-files',
-    version='0.1.3',
+    version='0.1.4',
     author='GraySilver',
     author_email='allenyzx@163.com',
     url='https://upload.pypi.org/allenyzx/',
