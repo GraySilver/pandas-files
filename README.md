@@ -1,6 +1,6 @@
 ## Pandas-files
 
-pandas-files是基于Pandas和HDFS格式文件的一个微存储分布式框架，可以在不同分区、不同结点下分布你的子文件，然后通过模块对应的索引结构将其关联。
+Pandas-files是基于Pandas和HDFS格式文件的一个微存储分布式框架，可以在不同分区、不同结点下分布你的子文件，然后通过模块对应的索引结构将其关联。
 
 目前支持所有基本数据类型，支持的数据结构有List、Dict、Tuple、Set、DataFrame、Array等。
 
@@ -45,9 +45,7 @@ dis = pf.Distribution(chunk=2, mode='r',auto=True)
 dis.read('key')
 ```
 
-Example 3.通过配置文件写入/读取
-
-![](http://graysliver.oss-cn-shenzhen.aliyuncs.com/pandas-files.JPG)
+**Example 3.通过配置文件写入/读取**
 
 ```python
 import pandasfiles as pf
@@ -65,6 +63,10 @@ dis = pf.Distribution(conf_path='xxxx',chunk=1, mode='r',auto=False)
 # 无须start/end
 dis.read('key')
 ```
+
+**配置文件如下：**
+
+![](http://graysliver.oss-cn-shenzhen.aliyuncs.com/pandas-files.JPG)
 
 ### Change Logs
 
