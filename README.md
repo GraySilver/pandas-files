@@ -4,6 +4,8 @@ Pandas-files是基于Pandas和HDFS格式文件的一个微存储分布式框架�
 
 目前支持所有基本数据类型，支持的数据结构有List、Dict、Tuple、Set、DataFrame、Array等。
 
+（作者主要用于做金融数据的快速存储和查找。）
+
 ### Dependencies
 
 - Python 2.x/3.x
