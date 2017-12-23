@@ -26,7 +26,7 @@ pip install pandas-files --upgrade
 
 ### Quick Start
 
-**Example 1.快速写入文件**
+**Example 1.快速写入文件(write)**
 
 ```python
 import pandasfiles as pf
@@ -38,7 +38,7 @@ for i in range(5):
 dis.end()
 ```
 
-**Example 2.读取文件**
+**Example 2.快速读取文件(read)**
 
 ```python
 import pandasfiles as pf
@@ -47,7 +47,19 @@ dis = pf.Distribution(chunk=2, mode='r',auto=True)
 dis.read('key')
 ```
 
-**Example 3.通过配置文件写入/读取**
+**Example 3.快速新增文件(append)**
+
+```python
+import pandasfiles as pf
+dis = pf.Distribution(chunk=2, mode='a',auto=True)
+dis.start()
+for i in range(5):
+  name = 'st%s'%i
+  dis.write(name,i)
+dis.end()
+```
+
+**Example 4.通过配置文件写入/读取**
 
 ```python
 import pandasfiles as pf
@@ -71,7 +83,6 @@ dis.read('key')
 ```ini
 ;主文件配置名必填，为main
 [main]
-
 ;temp_path ： 索引路径，必填
 index_path = E:/MyGithub/pandas-files/pandasfiles/tmp
 
@@ -86,7 +97,6 @@ log_file_path = E:/MyGithub/pandas-files/pandasfiles/log/fgit.log
 
 ;silent : Boolean，表示是否开始控制台输出log
 silent = False
-
 
 ;子文件配置名可以随便填写
 [zz1]
