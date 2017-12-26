@@ -17,7 +17,7 @@ def checkBoolean(string):
 class Setting(Distribution):
 
 
-    def __init__(self,mode='w',ktype='hdfs',chunk=1,conf_path='',auto=False):
+    def __init__(self,mode='w',ktype='hdfs',chunk=1,conf_path='',auto=False,check_repeat_columns=None):
         if mode in ['w','a','r','r+']:
             self.mode = mode
         else:
@@ -87,6 +87,7 @@ class Setting(Distribution):
                               sub_store=sub_sections,
                               log_file_path=self.log_file_path,
                               silent=self.silent,
-                              ktype=self.ktype)
+                              ktype=self.ktype,
+                              check_repeat_columns=check_repeat_columns)
 
 

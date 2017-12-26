@@ -44,6 +44,16 @@ class Craft:
             resp = joblib.load(self.s_path+self.s_name)[key]
             return resp
 
+    def _built_in_read(self,key):
+        if self.ktype == 'hdfs':
+            resp = self.hdfs[key]
+            return resp
+        elif self.ktype == 'joblib':
+            resp = joblib.load(self.s_path+self.s_name)[key]
+            return resp
+
+
+
     def write(self,key,value):
         if self.mode in ['w','a']:
             if self.ktype == 'hdfs':

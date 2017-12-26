@@ -11,7 +11,7 @@ from pandasfiles.utils.lylogger import tolog
 class Distribution:
 
 
-    def __init__(self,partition_name,chunk,mode,ktype,index_path,sub_store,log_file_path,silent):
+    def __init__(self,partition_name,chunk,mode,ktype,index_path,sub_store,log_file_path,silent,check_repeat_columns):
 
         self.__partition_name = partition_name
         self.__chunk = chunk
@@ -20,6 +20,7 @@ class Distribution:
         self.__sub_store = sub_store
         self.__ktype = ktype
         self.__logger = tolog(operate_name='distributed', log_file_path=log_file_path,silent=silent)
+        self.__check_repeat_columns = check_repeat_columns
 
         if mode in ['a','r','r+']:
             try:
@@ -112,7 +113,18 @@ class Distribution:
             if key in self.__KEYS:
                 s_name = self.__CHUNKED_INDEXS[key]
                 fileIndex = self._get_file_index(s_name)
-                globals()[PARTITION_VARIABLE.format(fileIndex)].append(key, value)
+
+                # add check_repeat_columns
+                if self.__check_repeat_columns != None:
+                    check = globals()[PARTITION_VARIABLE.format(fileIndex)]._built_in_read(key)
+                    if  self.__check_repeat_columns not in check.columns and self.__check_repeat_columns not in value.columns:
+                        self.end()
+                        raise ValueError('if you want to check repeat values,please write current column but not "{}" and mode must be "hdfs".'.format(self.__check_repeat_columns))
+                    else:
+                        if len(set(check[self.__check_repeat_columns])&set(value[self.__check_repeat_columns])) !=0:
+                            self.__logger.printf_debug("the new value is repeated by {}.".format(key))
+                else:
+                    globals()[PARTITION_VARIABLE.format(fileIndex)].append(key, value)
             else:
                 keyCounts = self._check_keys_count(mode='a')
                 fileIndex = self._get_file_index(keyCounts[-1][0])
@@ -126,6 +138,7 @@ class Distribution:
             else: self.__logger.printf_debug('%s is empty.'%key)
 
         elif self.__mode in ['r','r+']:
+            self.end()
             raise ValueError("the mode is 'r',you only can read.")
 
 
