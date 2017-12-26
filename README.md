@@ -112,6 +112,10 @@ temp_path = E:/MyGithub/pandas-files/pandasfiles/tmp
 
 ### Change Logs
 
+### 0.1.5 2017/12/26
+
+- 新增：检查HDF5格式文件唯一索引是否重复的功能
+
 ### 0.1.4 2017/12/14
 
 - 创建第一个版本
