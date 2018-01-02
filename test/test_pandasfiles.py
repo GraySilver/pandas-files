@@ -1,5 +1,7 @@
 import pandasfiles as pf
 import numpy as np
+import joblib
+from pandasfiles.base.craft import Craft
 
 
 
@@ -9,13 +11,14 @@ import numpy as np
 
 if __name__ == '__main__':
     import tushare as ts
-    dis = pf.Distribution(chunk=2,mode='w',auto=True)
+    dis = pf.Distribution(chunk=2,mode='a',auto=True,check_repeat_columns='date')
     dis.start()
-    stock_data = ts.get_stock_basics()
-    for i in stock_data.index.tolist()[8:30]:
+    stock_data = ['600115','000400']
+    for i in stock_data:
         name = 'st'+i
-        zz = ts.get_k_data(i)
+        zz = ts.get_k_data(i,start='2017-01-01',end='2017-10-03')
         dis.write(name,zz)
     dis.end()
-    df = dis.get_data('st002161')
+
+    df = dis.get_data('st000400')
     print(df)

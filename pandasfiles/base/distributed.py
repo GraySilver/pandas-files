@@ -5,6 +5,7 @@ import joblib
 from pandasfiles.base.craft import Craft
 from pandasfiles.base.template import STORE_NAME,PARTITION_VARIABLE,FILE_KEYS_LIST,INDEX_FILE
 from pandasfiles.utils.lylogger import tolog
+from pandasfiles.utils.tools import get_FILE_POSITIONS,remove_reindex
 
 
 
@@ -115,14 +116,20 @@ class Distribution:
                 fileIndex = self._get_file_index(s_name)
 
                 # add check_repeat_columns
-                if self.__check_repeat_columns != None:
+                if self.__check_repeat_columns != None and value.empty is False :
                     check = globals()[PARTITION_VARIABLE.format(fileIndex)]._built_in_read(key)
-                    if  self.__check_repeat_columns not in check.columns and self.__check_repeat_columns not in value.columns:
-                        self.end()
-                        raise ValueError('if you want to check repeat values,please write current column but not "{}" and mode must be "hdfs".'.format(self.__check_repeat_columns))
+                    if check.empty is False:
+                        if  self.__check_repeat_columns not in check.columns and self.__check_repeat_columns not in value.columns:
+                            self.end()
+                            raise ValueError('if you want to check repeat values,please write current column but not "{}" and mode must be "hdfs".'.format(self.__check_repeat_columns))
+                        else:
+                            if len(set(check[self.__check_repeat_columns])&set(value[self.__check_repeat_columns])) !=0:
+                                self.__logger.printf_debug("the new value is repeated by {}.".format(key))
+                            else:
+                                globals()[PARTITION_VARIABLE.format(fileIndex)].append(key, value)
                     else:
-                        if len(set(check[self.__check_repeat_columns])&set(value[self.__check_repeat_columns])) !=0:
-                            self.__logger.printf_debug("the new value is repeated by {}.".format(key))
+                        globals()[PARTITION_VARIABLE.format(fileIndex)].append(key, value)
+
                 else:
                     globals()[PARTITION_VARIABLE.format(fileIndex)].append(key, value)
             else:
@@ -141,6 +148,17 @@ class Distribution:
             self.end()
             raise ValueError("the mode is 'r',you only can read.")
 
+
+    def remove(self,key):
+        if key in self.__KEYS:
+            s_name = self.__CHUNKED_INDEXS[key]
+            fileIndex = self._get_file_index(s_name)
+            globals()[FILE_KEYS_LIST.format(fileIndex)].remove(key)
+            self.__KEYS.remove(key)
+            del self.__CHUNKED_INDEXS[key]
+            remove_reindex(self.__RE_CHUNKED_INDEXS,key)
+        else:
+            raise ValueError('key is not in INDEX.')
 
     def end(self):
         if self.__mode == 'w':
@@ -193,6 +211,11 @@ class Distribution:
     def positions(self):
         return joblib.load(self.__index_path+ INDEX_FILE.format(self.__partition_name))['position']
 
+    # 更新json中的路径信息
+    def update_positions(self):
+        json = joblib.load(self.__index_path + INDEX_FILE.format(self.__partition_name))
+        json['position'] = get_FILE_POSITIONS(self.__sub_store,self.__partitions)
+        return joblib.dump(json,self.__index_path + INDEX_FILE.format(self.__partition_name))
 
 
 

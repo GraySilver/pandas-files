@@ -52,8 +52,6 @@ class Craft:
             resp = joblib.load(self.s_path+self.s_name)[key]
             return resp
 
-
-
     def write(self,key,value):
         if self.mode in ['w','a']:
             if self.ktype == 'hdfs':
@@ -68,6 +66,12 @@ class Craft:
         elif self.mode in ['r','r+']:
             raise ValueError("the mode is 'r',you only can read.")
 
+    def remove(self,key):
+        if self.ktype == 'hdfs':
+            del self.hdfs[key]
+        elif self.ktype == 'joblib':
+            del self.job[key]
+        return True
 
     def append(self,key,value,reset_index=True):
         if self.mode in ['w','a']:

@@ -1,6 +1,7 @@
 import os
 import configparser
 from math import ceil
+import re
 
 
 def toBatchList(keylist, chunked=1):
@@ -73,5 +74,20 @@ def get_FileSize(filePath):
     fsize = os.path.getsize(filePath)
     return round(fsize, 2)
 
-if __name__ == '__main__':
-    get_config()
+
+def get_FILE_POSITIONS(sub_store,partitions):
+    # 文件名对应索引
+    def get_file_index(string):
+        return int(re.findall("\[(.*?)\]",string)[0])
+    if isinstance(partitions,list) and isinstance(sub_store,dict):
+        return {part:sub_store[get_file_index(str(part))] for part in partitions}
+    else:
+        raise TypeError('{} must be list and {} must be dict.'.format(partitions,sub_store))
+
+
+def remove_reindex(reindex,key):
+    for k,v in reindex.items():
+        if key in v:
+            v.remove(key)
+            reindex[k] = v
+    return reindex
