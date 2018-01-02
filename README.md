@@ -26,7 +26,7 @@ pip install pandas-files --upgrade
 
 ### Quick Start
 
-**Example 1.快速写入文件(write)**
+**Example 1.快速写入数据(write)**
 
 ```python
 import pandasfiles as pf
@@ -38,7 +38,7 @@ for i in range(5):
 dis.end()
 ```
 
-**Example 2.快速读取文件(read)**
+**Example 2.快速读取数据(read)**
 
 ```python
 import pandasfiles as pf
@@ -47,7 +47,7 @@ dis = pf.Distribution(chunk=2, mode='r',auto=True)
 dis.read('key')
 ```
 
-**Example 3.快速新增文件(append)**
+**Example 3.快速新增数据(append)**
 
 ```python
 import pandasfiles as pf
@@ -59,7 +59,19 @@ for i in range(5):
 dis.end()
 ```
 
-**Example 4.通过配置文件写入/读取**
+**Example 4.快速删除数据(remove)**
+
+```python
+import pandasfiles as pf
+dis = pf.Distribution(chunk=2, mode='a',auto=True)
+dis.start()
+for i in range(5):
+  name = 'st%s'%i
+  dis.remove(name)
+dis.end()
+```
+
+**Example 5.通过配置文件写入/读取**
 
 ```python
 import pandasfiles as pf
@@ -111,6 +123,10 @@ temp_path = E:/MyGithub/pandas-files/pandasfiles/tmp
 ```
 
 ### Change Logs
+
+### 0.1.7 2018/1/2
+
+- 新增：删除(remove)数据功能
 
 ### 0.1.5 2017/12/26
 
